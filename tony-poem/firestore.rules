@@ -1,0 +1,50 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Leadership Collection
+    match /leadership/{leaderId} {
+      // Allow public read access (e.g., for displaying leadership team)
+      allow read: if true;
+      // Allow write only for authenticated users (e.g., admins)
+      allow write: if request.auth != null;
+    }
+
+    // Blogs Collection
+    match /blogs/{blogId} {
+      // Allow public read access (for Blog and BlogDetails components)
+      allow read: if true;
+      // Allow write only for authenticated users (e.g., for CreateBlogPost)
+      allow write: if request.auth != null;
+    }
+
+    // Contact Collection
+    match /contacts/{contactId} {
+      // Allow write for anyone (for Contact form submissions)
+      allow write: if true;
+      // Restrict read access to authenticated users (e.g., admins viewing submissions)
+      allow read: if request.auth != null;
+    }
+
+    // Programs Collection
+    match /programs/{programId} {
+      // Allow public read access (for Programs component)
+      allow read: if true;
+      // Allow write only for authenticated users (e.g., for CreateProgram)
+      allow write: if request.auth != null;
+    }
+    
+        // Programs Collection
+    match /testimonials/{testimonialId} {
+      // Allow public read access (for Programs component)
+      allow read: if true;
+      // Allow write only for authenticated users (e.g., for CreateTestimonial)
+      allow write: if request.auth != null;
+    }
+
+    // Catch-all for other collections/documents
+    match /{document=**} {
+      allow read, write: if false; // Deny by default
+    }
+  }
+}

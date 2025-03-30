@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion"; // Added for smoother animations
+import { motion } from "framer-motion";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const About = () => {
   const [counters, setCounters] = useState({
@@ -7,6 +9,7 @@ const About = () => {
     volunteers: 0,
     programs: 0,
   });
+  const [leadership, setLeadership] = useState([]);
 
   useEffect(() => {
     const targetValues = { youthsImpacted: 500, volunteers: 150, programs: 50 };
@@ -43,6 +46,22 @@ const About = () => {
     if (counterSection) observer.observe(counterSection);
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const fetchLeadership = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "leadership"));
+        const leaders = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setLeadership(leaders);
+      } catch (error) {
+        console.error("Error fetching leadership data:", error);
+      }
+    };
+    fetchLeadership();
   }, []);
 
   return (
@@ -184,28 +203,16 @@ const About = () => {
           Our Leadership Team
         </h2>
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {[
-            { name: "John Doe", role: "Founder & CEO", img: "leader1.jpg" },
-            {
-              name: "Jane Smith",
-              role: "Director of Operations",
-              img: "leader2.jpg",
-            },
-            {
-              name: "Michael Brown",
-              role: "Head of Programs",
-              img: "leader3.jpg",
-            },
-          ].map((leader, index) => (
+          {leadership.map((leader, index) => (
             <motion.div
-              key={index}
+              key={leader.id}
               className="p-6 bg-white shadow-lg rounded-xl hover:shadow-xl transition-all duration-300"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <img
-                src={`/images/${leader.img}`}
+                src={leader.imageUrl}
                 alt={`${leader.name}, ${leader.role}`}
                 className="w-32 h-32 mx-auto rounded-full mb-4 object-cover"
               />

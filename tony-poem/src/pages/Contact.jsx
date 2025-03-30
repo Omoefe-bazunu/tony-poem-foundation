@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FaWhatsapp } from "react-icons/fa"; // WhatsApp icon
+import { db } from "../firebase"; // Adjust path to your firebase config
+import { collection, addDoc } from "firebase/firestore";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +10,8 @@ const Contact = () => {
     email: "",
     message: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
@@ -15,12 +19,28 @@ const Contact = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to a backend or email service
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-    setFormData({ name: "", email: "", message: "" }); // Reset form
+    setLoading(true);
+    setError(null);
+    setSubmitted(false);
+
+    try {
+      // Add form data to Firestore
+      const contactsRef = collection(db, "contacts");
+      await addDoc(contactsRef, {
+        ...formData,
+        submittedAt: new Date().toISOString(),
+      });
+
+      setSubmitted(true);
+      setFormData({ name: "", email: "", message: "" }); // Reset form
+    } catch (err) {
+      setError("Failed to send your message. Please try again.");
+      console.error("Error adding document: ", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,7 +48,7 @@ const Contact = () => {
       {/* Breadcrumb Section */}
       <motion.div
         className="relative h-64 sm:h-80 bg-cover bg-center text-white flex items-center justify-center"
-        style={{ backgroundImage: "url('customerb.jpg')" }}
+        style={{ backgroundImage: "url('customerb.jpg')" }} // Adjusted path
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -73,7 +93,8 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={loading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                     placeholder="Your Name"
                   />
                 </div>
@@ -91,7 +112,8 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={loading}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                     placeholder="Your Email"
                   />
                 </div>
@@ -108,16 +130,23 @@ const Contact = () => {
                     value={formData.message}
                     onChange={handleChange}
                     required
+                    disabled={loading}
                     rows="5"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                     placeholder="Your Message"
                   />
                 </div>
+                {error && <p className="text-red-500 text-sm">{error}</p>}
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-full shadow-md hover:bg-blue-600 transition-all duration-300"
+                  disabled={loading}
+                  className={`w-full px-6 py-3 rounded-full font-semibold shadow-md transition-all duration-300 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 text-white hover:bg-blue-600"
+                  }`}
                 >
-                  Send Message
+                  {loading ? "Sending..." : "Send Message"}
                 </button>
               </form>
             )}
@@ -149,7 +178,7 @@ const Contact = () => {
                 </li>
                 <li>
                   <strong>Phone:</strong>{" "}
-                  <a href="tel:+1234567890" className="hover:text-blue-600">
+                  <a href="tel:+2347048194180" className="hover:text-blue-600">
                     +234 704 819 4180
                   </a>
                 </li>

@@ -4,7 +4,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { motion } from "framer-motion";
 
-const LeadershipForm = () => {
+const TestimonialForm = () => {
   // Form state
   const [formData, setFormData] = useState({
     name: "",
@@ -52,21 +52,21 @@ const LeadershipForm = () => {
         // Upload image to Firebase Storage
         const storageRef = ref(
           storage,
-          `leadership/${formData.image.name}-${Date.now()}`
+          `testimonials/${formData.image.name}-${Date.now()}`
         );
         await uploadBytes(storageRef, formData.image);
         imageUrl = await getDownloadURL(storageRef);
       }
 
       // Add data to Firestore
-      const leadershipRef = collection(db, "leadership");
-      await addDoc(leadershipRef, {
+      const testimonialRef = collection(db, "testimonials");
+      await addDoc(testimonialRef, {
         name: formData.name,
         title: formData.title,
         department: formData.department,
         email: formData.email,
         bio: formData.bio,
-        imageUrl, // Store the image URL
+        imageUrl,
         createdAt: new Date().toISOString(),
       });
 
@@ -100,13 +100,13 @@ const LeadershipForm = () => {
 
   return (
     <motion.div
-      className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-12" // Adjusted mt-25 to mt-12
+      className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-12"
       variants={formVariants}
       initial="hidden"
       animate="visible"
     >
       <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
-        Add Leadership Profile
+        Add Testimonial
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -236,7 +236,7 @@ const LeadershipForm = () => {
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         {success && (
           <p className="text-green-500 text-sm text-center">
-            Leadership profile added successfully!
+            Testimonials added successfully!
           </p>
         )}
 
@@ -250,11 +250,11 @@ const LeadershipForm = () => {
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
-          {loading ? "Saving..." : "Add Leadership Profile"}
+          {loading ? "Saving..." : "Add Testimonial"}
         </button>
       </form>
     </motion.div>
   );
 };
 
-export default LeadershipForm;
+export default TestimonialForm;

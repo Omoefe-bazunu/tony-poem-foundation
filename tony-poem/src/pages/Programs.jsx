@@ -1,34 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import Slider from "react-slick"; // Added for image carousel
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { motion } from "framer-motion"; // Added for animations
-
-const programsData = [
-  {
-    id: 1,
-    name: "Youth Empowerment Program",
-    date: "March 10, 2024",
-    description: "A program to provide skills and mentorship for young people.",
-    images: ["/images/youth1.jpg", "/images/youth2.jpg", "/images/youth3.jpg"],
-    slug: "/programs/youth-empowerment",
-  },
-  {
-    id: 2,
-    name: "Entrepreneurship Bootcamp",
-    date: "April 5, 2024",
-    description: "A hands-on training for aspiring entrepreneurs.",
-    images: ["/images/bootcamp1.jpg", "/images/bootcamp2.jpg"],
-    slug: "/programs/entrepreneurship-bootcamp",
-  },
-  // Add more programs as needed
-];
+import { motion } from "framer-motion";
+import { db } from "../firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const Programs = () => {
   const [view, setView] = useState("grid");
   const [currentPage, setCurrentPage] = useState(1);
+  const [programsData, setProgramsData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const itemsPerPage = 2;
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      setLoading(true);
+      const querySnapshot = await getDocs(collection(db, "programs"));
+      const programs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProgramsData(programs);
+      setLoading(false);
+    };
+    fetchPrograms();
+  }, []);
 
   // Pagination Logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -46,6 +44,9 @@ const Programs = () => {
     autoplay: true,
     autoplaySpeed: 3000,
   };
+
+  if (loading)
+    return <p className="text-center text-gray-600 text-lg">Loading...</p>;
 
   return (
     <div className="w-full overflow-hidden">
@@ -121,7 +122,9 @@ const Programs = () => {
               <h3 className="text-xl font-semibold text-gray-800">
                 {program.name}
               </h3>
-              <p className="text-gray-500 text-sm mt-1">{program.date}</p>
+              <p className="text-gray-500 text-sm mt-1">
+                {new Date(program.date).toLocaleDateString()}
+              </p>
               <p className="text-gray-600 mt-2">{program.description}</p>
               <Link
                 to={program.slug}
@@ -138,17 +141,17 @@ const Programs = () => {
           <button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((prev) => prev - 1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50 hover:bg-blue-600 transition-all duration-300"
+            className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full shadow-md disabled:opacity-50 hover:bg-blue-600 transition-all duration-300"
           >
             Prev
           </button>
-          <span className="text-gray-700">
+          <span className="text-gray-700 text-lg">
             Page {currentPage} of {totalPages}
           </span>
           <button
             disabled={indexOfLastItem >= programsData.length}
             onClick={() => setCurrentPage((prev) => prev + 1)}
-            className="px-4 py-2 bg-blue-500 text-white rounded-full disabled:opacity-50 hover:bg-blue-600 transition-all duration-300"
+            className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full shadow-md disabled:opacity-50 hover:bg-blue-600 transition-all duration-300"
           >
             Next
           </button>
