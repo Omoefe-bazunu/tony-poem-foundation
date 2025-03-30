@@ -49,9 +49,9 @@ const blogs = [
 ];
 
 const impactStats = [
-  { value: "10K+", label: "Youth Impacted" },
-  { value: "50+", label: "Programs Run" },
-  { value: "15", label: "Countries Reached" },
+  { value: "500+", label: "Youth Impacted" },
+  { value: "150+", label: "Volunteers" },
+  { value: "50+", label: "Programs" },
 ];
 
 const partners = [
@@ -93,7 +93,7 @@ const Home = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full overflow-hidden">
       {/* HERO SECTION */}
       <section
         className="text-center py-20 bg-blue-500 text-white mt-8 bg-cover bg-center"

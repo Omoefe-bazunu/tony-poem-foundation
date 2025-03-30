@@ -45,9 +45,7 @@ const NavBar = () => {
                 to={item.path}
                 className={({ isActive }) =>
                   `relative cursor-pointer hover:text-blue-600 transition-colors duration-300 ${
-                    isActive
-                      ? "text-blue-600 font-semibold after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-blue-600"
-                      : ""
+                    isActive ? "after:text-blue-600 after:font-semibold" : ""
                   }`
                 }
               >

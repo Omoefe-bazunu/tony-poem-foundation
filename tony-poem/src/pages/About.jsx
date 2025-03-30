@@ -3,13 +3,13 @@ import { motion } from "framer-motion"; // Added for smoother animations
 
 const About = () => {
   const [counters, setCounters] = useState({
+    youthsImpacted: 0,
     volunteers: 0,
-    projects: 0,
     programs: 0,
   });
 
   useEffect(() => {
-    const targetValues = { volunteers: 150, projects: 30, programs: 20 };
+    const targetValues = { youthsImpacted: 500, volunteers: 150, programs: 50 };
     const duration = 2000;
 
     let startTime = null;
@@ -160,8 +160,8 @@ const About = () => {
         </h2>
         <div className="mt-8 grid gap-8 sm:grid-cols-3">
           {[
+            { value: counters.youthsImpacted, label: "Youths Impacted" },
             { value: counters.volunteers, label: "Volunteers" },
-            { value: counters.projects, label: "Projects" },
             { value: counters.programs, label: "Programs" },
           ].map((item, index) => (
             <motion.div
@@ -171,7 +171,7 @@ const About = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: index * 0.2 }}
             >
-              <h3 className="text-4xl font-bold text-white">{item.value}+</h3>
+              <h3 className="text-3xl font-bold text-white">{item.value}+</h3>
               <p className="text-white mt-2">{item.label}</p>
             </motion.div>
           ))}
@@ -209,10 +209,10 @@ const About = () => {
                 alt={`${leader.name}, ${leader.role}`}
                 className="w-32 h-32 mx-auto rounded-full mb-4 object-cover"
               />
-              <h3 className="text-xl font-semibold text-gray-800 text-center">
+              <h3 className="text-lg font-semibold text-gray-800 text-center">
                 {leader.name}
               </h3>
-              <p className="text-gray-500 text-center">{leader.role}</p>
+              <p className="text-gray-500 text-center text-xs">{leader.role}</p>
             </motion.div>
           ))}
         </div>
@@ -235,7 +235,7 @@ const About = () => {
           Join us in making a difference. Volunteer, donate, or partner with us
           today!
         </p>
-        <motion.button className="px-8 py-3 bg-white cursor-pointer text-blue-500 font-semibold rounded-full shadow-md hover:bg-gray-100 transition-all duration-300">
+        <motion.button className="px-8 py-3 bg-white cursor-pointer text-blue-500 font-semibold rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300">
           Contact Us
         </motion.button>
       </section>
