@@ -124,14 +124,7 @@ const Home = () => {
         className="text-center py-20 bg-blue-500 text-white mt-8 bg-cover bg-center"
         style={{ backgroundImage: `url('tbg.jpg')` }}
       >
-        <motion.h1
-          className="text-4xl sm:text-5xl font-bold"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          Tony Poem Foundation
-        </motion.h1>
+        <h1 className="text-4xl sm:text-5xl font-bold">Tony Poem Foundation</h1>
         <p className="mt-4 lg:text-lg text-sm max-w-3xl mx-auto">
           Creating Opportunities for Youths in Africa
         </p>
