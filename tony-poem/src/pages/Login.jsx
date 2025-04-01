@@ -163,7 +163,7 @@ const Login = () => {
             </form>
           )}
 
-          {/* Register Link */}
+          {/* Register Link
           {!success && (
             <p className="mt-4 text-center text-gray-600">
               Don’t have an account?{" "}
@@ -171,7 +171,7 @@ const Login = () => {
                 Register
               </Link>
             </p>
-          )}
+          )} */}
         </motion.div>
       </section>
     </div>

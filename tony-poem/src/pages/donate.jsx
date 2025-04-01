@@ -4,7 +4,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { motion } from "framer-motion";
 
-const LeadershipForm = () => {
+const Donation = () => {
   // Form state
   const [formData, setFormData] = useState({
     name: "",
@@ -52,21 +52,18 @@ const LeadershipForm = () => {
         // Upload image to Firebase Storage
         const storageRef = ref(
           storage,
-          `leadership/${formData.image.name}-${Date.now()}`
+          `donations/${formData.image.name}-${Date.now()}`
         );
         await uploadBytes(storageRef, formData.image);
         imageUrl = await getDownloadURL(storageRef);
       }
 
       // Add data to Firestore
-      const leadershipRef = collection(db, "leadership");
-      await addDoc(leadershipRef, {
+      const donationsRef = collection(db, "donations");
+      await addDoc(donationsRef, {
         name: formData.name,
-        title: formData.title,
-        department: formData.department,
         email: formData.email,
-        bio: formData.bio,
-        imageUrl, // Store the image URL
+        imageUrl,
         createdAt: new Date().toISOString(),
       });
 
@@ -74,14 +71,11 @@ const LeadershipForm = () => {
       // Reset form
       setFormData({
         name: "",
-        title: "",
-        department: "",
         email: "",
-        bio: "",
         image: null,
       });
     } catch (err) {
-      setError("Failed to save leadership data. Please try again.");
+      setError("Failed to save donation data. Please try again.");
       console.error("Error adding document: ", err);
     } finally {
       setLoading(false);
@@ -100,14 +94,18 @@ const LeadershipForm = () => {
 
   return (
     <motion.div
-      className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-25 mb-16"
+      className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-25 mb-18"
       variants={formVariants}
       initial="hidden"
       animate="visible"
     >
       <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
-        Add Leadership Profile
+        Make a Donation
       </h2>
+      <p className=" max-w-3xl text-center mb-8">
+        Support our cause by making a donation. Any amount will be greatly
+        appreciated
+      </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
@@ -127,46 +125,6 @@ const LeadershipForm = () => {
             required
             className="mt-1 block w-full rounded-md p-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Enter full name"
-          />
-        </div>
-
-        {/* Title */}
-        <div>
-          <label
-            htmlFor="title"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Leadership Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g., Director of Operations"
-          />
-        </div>
-
-        {/* Department */}
-        <div>
-          <label
-            htmlFor="department"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Department
-          </label>
-          <input
-            type="text"
-            id="department"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g., Human Resources"
           />
         </div>
 
@@ -196,7 +154,7 @@ const LeadershipForm = () => {
             htmlFor="image"
             className="block text-sm font-medium text-gray-700"
           >
-            Profile Picture
+            Payment Receipt/Screenshot
           </label>
           <input
             type="file"
@@ -213,30 +171,11 @@ const LeadershipForm = () => {
           )}
         </div>
 
-        {/* Bio */}
-        <div>
-          <label
-            htmlFor="bio"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Biography
-          </label>
-          <textarea
-            id="bio"
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            rows={4}
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Brief description of leadership experience"
-          />
-        </div>
-
         {/* Status Messages */}
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         {success && (
           <p className="text-green-500 text-sm text-center">
-            Leadership profile added successfully!
+            Thank you for supporting a noble cause
           </p>
         )}
 
@@ -250,11 +189,11 @@ const LeadershipForm = () => {
               : "bg-blue-500 text-white hover:bg-blue-600"
           }`}
         >
-          {loading ? "Saving..." : "Add Leadership Profile"}
+          {loading ? "Submiting..." : "Submit"}
         </button>
       </form>
     </motion.div>
   );
 };
 
-export default LeadershipForm;
+export default Donation;

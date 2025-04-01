@@ -9,10 +9,7 @@ const TestimonialForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     title: "",
-    department: "",
-    email: "",
-    bio: "",
-    image: null, // Added for file input
+    review: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -28,17 +25,6 @@ const TestimonialForm = () => {
     }));
   };
 
-  // Handle image file change
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        image: file,
-      }));
-    }
-  };
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,26 +33,12 @@ const TestimonialForm = () => {
     setSuccess(false);
 
     try {
-      let imageUrl = "";
-      if (formData.image) {
-        // Upload image to Firebase Storage
-        const storageRef = ref(
-          storage,
-          `testimonials/${formData.image.name}-${Date.now()}`
-        );
-        await uploadBytes(storageRef, formData.image);
-        imageUrl = await getDownloadURL(storageRef);
-      }
-
       // Add data to Firestore
       const testimonialRef = collection(db, "testimonials");
       await addDoc(testimonialRef, {
         name: formData.name,
         title: formData.title,
-        department: formData.department,
-        email: formData.email,
-        bio: formData.bio,
-        imageUrl,
+        review: formData.review,
         createdAt: new Date().toISOString(),
       });
 
@@ -75,10 +47,7 @@ const TestimonialForm = () => {
       setFormData({
         name: "",
         title: "",
-        department: "",
-        email: "",
-        bio: "",
-        image: null,
+        review: "",
       });
     } catch (err) {
       setError("Failed to save leadership data. Please try again.");
@@ -100,7 +69,7 @@ const TestimonialForm = () => {
 
   return (
     <motion.div
-      className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-12"
+      className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-25 mb-16"
       variants={formVariants}
       initial="hidden"
       animate="visible"
@@ -136,7 +105,7 @@ const TestimonialForm = () => {
             htmlFor="title"
             className="block text-sm font-medium text-gray-700"
           >
-            Leadership Title
+            Title
           </label>
           <input
             type="text"
@@ -146,71 +115,8 @@ const TestimonialForm = () => {
             onChange={handleChange}
             required
             className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g., Director of Operations"
+            placeholder="e.g., Resident, Asaba, Delta State"
           />
-        </div>
-
-        {/* Department */}
-        <div>
-          <label
-            htmlFor="department"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Department
-          </label>
-          <input
-            type="text"
-            id="department"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="e.g., Human Resources"
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Enter email address"
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label
-            htmlFor="image"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Profile Picture
-          </label>
-          <input
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
-          {formData.image && (
-            <p className="mt-2 text-sm text-gray-500">
-              Selected: {formData.image.name}
-            </p>
-          )}
         </div>
 
         {/* Bio */}
@@ -219,16 +125,16 @@ const TestimonialForm = () => {
             htmlFor="bio"
             className="block text-sm font-medium text-gray-700"
           >
-            Biography
+            Brief Review/Short statement
           </label>
           <textarea
-            id="bio"
-            name="bio"
+            id="review"
+            name="review"
             value={formData.bio}
             onChange={handleChange}
             rows={4}
             className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Brief description of leadership experience"
+            placeholder="Enter the review or statement here"
           />
         </div>
 

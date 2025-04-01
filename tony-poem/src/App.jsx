@@ -12,6 +12,7 @@ import CreateProgram from "./pages/addProgram";
 import TestimonialForm from "./pages/addTestimonials";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/manageContent";
+import Donation from "./pages/donate";
 // import Footer from "./components/Footer";
 
 function App() {
@@ -29,8 +30,9 @@ function App() {
         <Route path="/addPost" element={<CreateBlogPost />} />
         <Route path="/addProgram" element={<CreateProgram />} />
         <Route path="/addTestimonial" element={<TestimonialForm />} />
-        <Route path="/Adminlogin" element={<Login />} />
+        <Route path="/adminlogin" element={<Login />} />
         <Route path="/manageContent" element={<AdminDashboard />} />
+        <Route path="/donation" element={<Donation />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
       {/* <Footer /> */}

@@ -61,7 +61,7 @@ const CreateProgram = () => {
       setSuccess(true);
       setFormData({ name: "", date: "", description: "", images: [] }); // Reset form
     } catch (err) {
-      setError("Failed to create program. Please try again.");
+      setError("Failed to create project. Please try again.");
       console.error("Error adding document: ", err);
     } finally {
       setLoading(false);
@@ -91,7 +91,7 @@ const CreateProgram = () => {
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative text-center">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
-            Create Program
+            Create Project
           </h1>
         </div>
       </motion.div>
@@ -105,11 +105,11 @@ const CreateProgram = () => {
           animate="visible"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center mb-6">
-            Add a New Program
+            Add a New Project
           </h2>
           {success ? (
             <p className="text-green-600 text-lg text-center">
-              Program created successfully!
+              Project created successfully!
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -119,7 +119,7 @@ const CreateProgram = () => {
                   htmlFor="name"
                   className="block text-gray-700 font-medium mb-2"
                 >
-                  Program Name
+                  Project Name
                 </label>
                 <input
                   type="text"
@@ -130,7 +130,7 @@ const CreateProgram = () => {
                   required
                   disabled={loading}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
-                  placeholder="Enter program name"
+                  placeholder="Enter project name"
                 />
               </div>
 
@@ -181,7 +181,7 @@ const CreateProgram = () => {
                   htmlFor="images"
                   className="block text-gray-700 font-medium mb-2"
                 >
-                  Program Images (Carousel)
+                  Project Images (Maximum of 3)
                 </label>
                 <input
                   type="file"

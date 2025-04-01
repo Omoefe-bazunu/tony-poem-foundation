@@ -8,11 +8,22 @@ import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const Programs = () => {
-  const [view, setView] = useState("grid");
+  const [view, setView] = useState(() =>
+    window.innerWidth >= 640 ? "grid" : "list"
+  );
   const [currentPage, setCurrentPage] = useState(1);
   const [programsData, setProgramsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const itemsPerPage = 2;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setView(window.innerWidth >= 640 ? "grid" : "list");
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -60,20 +71,20 @@ const Programs = () => {
       >
         <div className="absolute inset-0 bg-black/60"></div>
         <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-bold">
-          Our Programs
+          Our Projects
         </h1>
       </motion.div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* View Toggle */}
+        {/* View Toggle - Only show on desktop */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800">
-            Explore Our Programs
+            Explore Our Projects
           </h2>
-          <div className="mt-4 sm:mt-0">
+          <div className="hidden sm:block mt-4 sm:mt-0">
             <button
               onClick={() => setView("grid")}
-              className={`px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
+              className={`px-4 py-2 cursor-pointer rounded-full font-semibold transition-all duration-300 ${
                 view === "grid"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -83,7 +94,7 @@ const Programs = () => {
             </button>
             <button
               onClick={() => setView("list")}
-              className={`ml-2 px-4 py-2 rounded-full font-semibold transition-all duration-300 ${
+              className={`ml-2 px-4 py-2 cursor-pointer rounded-full font-semibold transition-all duration-300 ${
                 view === "list"
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
@@ -97,7 +108,9 @@ const Programs = () => {
         {/* Programs Display */}
         <div
           className={
-            view === "grid" ? "grid sm:grid-cols-2 gap-8" : "space-y-8"
+            view === "grid" && window.innerWidth >= 640 // Only apply grid on desktop when grid is selected
+              ? "grid sm:grid-cols-2 gap-8"
+              : "space-y-8" // List view by default on mobile and when list is selected
           }
         >
           {currentPrograms.map((program) => (
@@ -114,7 +127,7 @@ const Programs = () => {
                     <img
                       src={img}
                       alt={`${program.name} - Image ${index + 1}`}
-                      className="w-full h-48 object-cover rounded-md"
+                      className="w-full h-full object-cover` rounded-md"
                     />
                   </div>
                 ))}
@@ -126,12 +139,12 @@ const Programs = () => {
                 {new Date(program.date).toLocaleDateString()}
               </p>
               <p className="text-gray-600 mt-2">{program.description}</p>
-              <Link
+              {/* <Link
                 to={program.slug}
                 className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all duration-300"
               >
                 Learn More
-              </Link>
+              </Link> */}
             </motion.div>
           ))}
         </div>

@@ -15,7 +15,7 @@ const NavBar = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About", path: "/about" },
-    { name: "Programs", path: "/programs" },
+    { name: "Projects", path: "/programs" },
     { name: "Blog", path: "/blog" },
     { name: "Contact", path: "/contact" },
   ];
@@ -56,7 +56,7 @@ const NavBar = () => {
           {/* Donate Button */}
           <li>
             <NavLink
-              to="/donate"
+              to="/donation"
               className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all duration-300"
             >
               Donate
@@ -98,7 +98,7 @@ const NavBar = () => {
             {/* Donate Button in Mobile Menu */}
             <li>
               <button
-                onClick={() => handleNavClick("/donate")}
+                onClick={() => handleNavClick("/donation")}
                 className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all duration-300"
               >
                 Donate

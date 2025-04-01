@@ -76,6 +76,7 @@ const AdminDashboard = () => {
   const [blogs, setBlogs] = useState([]);
   const [leadership, setLeadership] = useState([]);
   const [programs, setPrograms] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
@@ -85,7 +86,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
-        navigate("/login");
+        navigate("/adminlogin");
       }
       setUser(currentUser);
     });
@@ -118,6 +119,15 @@ const AdminDashboard = () => {
           ...doc.data(),
         }));
         setLeadership(leadershipData);
+
+        // Fetch Testimonials (assuming a "testimonials" collection)
+        const testRef = collection(db, "testimonials");
+        const testSnapshot = await getDocs(testRef);
+        const testData = testSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setTestimonials(testData);
 
         // Fetch Programs
         const programsRef = collection(db, "programs");
@@ -167,6 +177,8 @@ const AdminDashboard = () => {
         setBlogs(blogs.filter((b) => b.id !== item.id));
       } else if (item.collection === "leadership") {
         setLeadership(leadership.filter((l) => l.id !== item.id));
+      } else if (item.collection === "testimonials") {
+        setTestimonials(testimonials.filter((l) => l.id !== item.id));
       } else if (item.collection === "programs") {
         setPrograms(programs.filter((p) => p.id !== item.id));
       }
@@ -225,12 +237,46 @@ const AdminDashboard = () => {
             onDelete={handleDelete}
           />
           <CollapsibleSection
+            title="testimonials"
+            items={testimonials.map((l) => ({
+              ...l,
+              collection: "testimonials",
+            }))}
+            onDelete={handleDelete}
+          />
+          <CollapsibleSection
             title="Programs"
             items={programs.map((p) => ({ ...p, collection: "programs" }))}
             onDelete={handleDelete}
           />
         </motion.div>
       </section>
+      <div className=" mx-auto max-w-xl px-12  mb-8 bg-none text-center  grid grid-cols-2 gap-6 justify-center items-center">
+        <Link
+          to="/addPost"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+        >
+          Add Blog Post
+        </Link>
+        <Link
+          to="/addLeaders"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+        >
+          Add Learders
+        </Link>
+        <Link
+          to="/addProgram"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+        >
+          Add Projects
+        </Link>
+        <Link
+          to="/addTestimonial"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+        >
+          Add Testimonials
+        </Link>
+      </div>
     </div>
   );
 };

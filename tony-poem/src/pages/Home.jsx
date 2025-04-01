@@ -38,7 +38,7 @@ const Home = () => {
         const blogsQuery = query(
           collection(db, "blogs"),
           orderBy("date", "desc"),
-          limit(3) // Limit to 3 latest blogs
+          limit(3)
         );
         const querySnapshot = await getDocs(blogsQuery);
         const blogData = querySnapshot.docs.map((doc) => ({
@@ -58,14 +58,16 @@ const Home = () => {
       try {
         const programsQuery = query(
           collection(db, "programs"),
-          limit(3) // Limit to 3 programs for carousel
+          orderBy("date", "desc"), // Added orderBy to get most recent
+          limit(3) // Limit to 3 most recent projects
         );
         const querySnapshot = await getDocs(programsQuery);
         const programData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          img: doc.data().images[0] || "abt.jpg", // Use first image
+          img: doc.data().images[0] || "abt.jpg",
           title: doc.data().name,
           alt: `${doc.data().name} event`,
+          date: doc.data().date, // Include date for ordering
         }));
         setProjects(programData);
       } catch (err) {
@@ -73,20 +75,20 @@ const Home = () => {
       }
     };
 
-    // Fetch testimonials (for Projects)
+    // Fetch testimonials
     const fetchTestimonials = async () => {
       try {
         const testimonialQuery = query(collection(db, "testimonials"));
         const querySnapshot = await getDocs(testimonialQuery);
         const testimonialData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          img: doc.data().images[0] || "abt.jpg", // Use first image
-          title: doc.data().name,
-          alt: `${doc.data().name} event`,
+          name: doc.data().name,
+          title: doc.data().title,
+          review: doc.data().review,
         }));
         setTestimonial(testimonialData);
       } catch (err) {
-        console.error("Error fetching programs:", err);
+        console.error("Error fetching testimonials:", err);
       }
     };
 
@@ -95,21 +97,37 @@ const Home = () => {
     fetchPrograms();
   }, []);
 
-  const sliderSettings = {
+  const testimonialSliderSettings = {
     dots: true,
-    infinite: true,
+    infinite: testimonials.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: testimonials.length > 1,
     autoplaySpeed: 3000,
-    arrows: false,
+    arrows: true,
+    centerMode: false,
+    centerPadding: "0px",
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   const impactStats = [
     { value: "500+", label: "Youth Impacted" },
     { value: "150+", label: "Volunteers" },
-    { value: "50+", label: "Programs" },
+    { value: "50+", label: "Projects" },
   ];
 
   const partners = [
@@ -135,7 +153,7 @@ const Home = () => {
 
       {/* ABOUT US */}
       <section className="py-16 text-center bg-white">
-        <h2 className="text-2xl sm:text-3xl font-semibold">About Us</h2>
+        <h2 className="text- jig2xl sm:text-3xl font-semibold">About Us</h2>
         <p className="mt-4 text-gray-600 max-w-4xl mx-auto">
           Tony Poem Foundation is a worldwide therapy solutions NGO dedicated to
           youth empowerment, skill acquisition, and leadership development
@@ -164,28 +182,28 @@ const Home = () => {
         </Link>
       </section>
 
-      {/* OUR PROJECTS (CAROUSEL) */}
+      {/* OUR PROJECTS (GRID) */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
         <h2 className="text-2xl sm:text-3xl font-semibold text-center">
           Our Projects
         </h2>
         {loading ? (
           <p className="text-center text-gray-600 mt-8">Loading projects...</p>
-        ) : isClient && projects.length > 0 ? (
-          <Slider {...sliderSettings} className="mt-8">
+        ) : projects.length > 0 ? (
+          <div className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-3 px-6 lg:px-12">
             {projects.map((project) => (
-              <div key={project.id} className="p-4">
+              <div key={project.id} className="p-4 flex flex-col items-center">
                 <img
                   src={project.img}
                   alt={project.alt}
-                  className="w-full h-64 object-cover rounded-lg shadow-lg"
+                  className="w-full h-64 object-cover rounded-lg shadow-lg border-4 border-white"
                 />
                 <h3 className="text-lg font-semibold text-center mt-4">
                   {project.title}
                 </h3>
               </div>
             ))}
-          </Slider>
+          </div>
         ) : (
           <p className="text-center text-gray-600 mt-8">
             No projects available.
@@ -224,23 +242,24 @@ const Home = () => {
       <section className="py-16 bg-white text-center px-6 lg:px-12">
         <h2 className="text-2xl sm:text-3xl font-semibold">What People Say</h2>
         {loading ? (
-          <p className="text-center text-gray-600 mt-8">Loading projects...</p>
-        ) : isClient && projects.length > 0 ? (
-          <Slider {...sliderSettings} className="mt-8 max-w-lg mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className="p-6 bg-gray-500 flex flex-col justify-center items-center rounded-lg shadow-md"
-              >
-                <img
-                  src=""
-                  alt="author's image"
-                  className="bg-contain w-24 h-24 bg-gray-600 mx-auto rounded-full mb-2"
-                />
-                <p className="text-white italic">"{testimonial.text}"</p>
-                <h4 className="mt-2 font-semibold text-white">
-                  - {testimonial.author}
-                </h4>
+          <p className="text-center text-gray-600 mt-8">
+            Loading testimonials...
+          </p>
+        ) : isClient && testimonials.length > 0 ? (
+          <Slider {...testimonialSliderSettings} className="">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="p-4">
+                <div className="bg-white shadow-lg rounded-lg p-6 mx-2 h-full flex flex-col justify-between ">
+                  <p className="text-gray-800 italic mb-4">
+                    "{testimonial.review}"
+                  </p>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">
+                      {testimonial.name}
+                    </h4>
+                    <p className="text-gray-600 text-sm">{testimonial.title}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </Slider>
@@ -263,15 +282,23 @@ const Home = () => {
             {blogs.map((blog) => (
               <div
                 key={blog.id}
-                className="p-6 border border-blue-300 flex flex-col rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                className="p-6 border border-blue-300 flex rounded-lg shadow-md hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-lg font-semibold">{blog.title}</h3>
-                <p className="text-gray-500 text-sm mt-2 flex-grow">
-                  {new Date(blog.date).toLocaleDateString()}
-                </p>
-                <Link to={`/blog/${blog.id}`}>
-                  <p className="mt-4 text-blue-500 cursor-pointer">Read More</p>
-                </Link>
+                <div className=" w-full flex flex-col">
+                  <h3 className="text-lg font-semibold">{blog.title}</h3>
+                  <p className="text-gray-500 text-sm mt-2 flex-grow">
+                    {new Date(blog.date).toLocaleDateString()}
+                  </p>
+                  <Link to={`/blog/${blog.id}`}>
+                    <p className="mt-4 text-blue-500 cursor-pointer">
+                      Read More
+                    </p>
+                  </Link>
+                </div>
+                <div
+                  className=" w-full h-full border border-blue-300 bg-center bg-cover"
+                  style={{ backgroundImage: `url('${blog.imageUrl}')` }}
+                ></div>
               </div>
             ))}
           </div>
@@ -311,8 +338,12 @@ const Home = () => {
           volunteering, or spreading the word.
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center px-12">
-          <Button>Donate Now</Button>
-          <Button primary={false}>Volunteer</Button>
+          <Link to="/donation">
+            <Button>Donate Now</Button>
+          </Link>
+          <Link to="/contact">
+            <Button primary={false}>Volunteer</Button>
+          </Link>
         </div>
       </section>
     </div>

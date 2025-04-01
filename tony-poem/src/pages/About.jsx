@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { Link } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
 const About = () => {
   const [counters, setCounters] = useState({
@@ -10,6 +12,7 @@ const About = () => {
     programs: 0,
   });
   const [leadership, setLeadership] = useState([]);
+  const [currentLeaderIndex, setCurrentLeaderIndex] = useState(0);
 
   useEffect(() => {
     const targetValues = { youthsImpacted: 500, volunteers: 150, programs: 50 };
@@ -198,30 +201,76 @@ const About = () => {
       </section>
 
       {/* Leadership Team */}
-      <section className="bg-gray-100 py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-100 overflow-hidden">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
           Our Leadership Team
         </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {leadership.map((leader, index) => (
-            <motion.div
-              key={leader.id}
-              className="p-6 bg-white shadow-lg rounded-xl hover:shadow-xl transition-all duration-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+
+        <div className="relative max-w-7xl mx-auto">
+          {/* Slider Container */}
+          <div className="relative h-96 overflow-hidden shadow-xl">
+            <AnimatePresence initial={false}>
+              {leadership.length > 0 && (
+                <motion.div
+                  key={leadership[currentLeaderIndex].id}
+                  initial={{ x: 300, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -300, opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white shadow-lg rounded-xl"
+                >
+                  <img
+                    src={leadership[currentLeaderIndex].imageUrl}
+                    alt={`${leadership[currentLeaderIndex].name}`}
+                    className="w-32 h-32 mx-auto rounded-full mb-4 object-cover"
+                  />
+                  <h3 className="text-xl font-semibold text-gray-800 text-center">
+                    {leadership[currentLeaderIndex].name}
+                  </h3>
+                  <p className="text-gray-500 text-center mb-4">
+                    {leadership[currentLeaderIndex].title}
+                  </p>
+                  {/* <p className="text-gray-600 text-center max-w-md">
+                    {leadership[currentLeaderIndex].bio ||
+                      "Leadership team member"}
+                  </p> */}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation Arrows */}
+          <div className="flex justify-center mt-8 space-x-4">
+            <button
+              onClick={() =>
+                setCurrentLeaderIndex(
+                  (prev) => (prev - 1 + leadership.length) % leadership.length
+                )
+              }
+              className="p-2 rounded-full bg-white shadow-md hover:bg-gray-200"
             >
-              <img
-                src={leader.imageUrl}
-                alt={`${leader.name}, ${leader.role}`}
-                className="w-32 h-32 mx-auto rounded-full mb-4 object-cover"
-              />
-              <h3 className="text-lg font-semibold text-gray-800 text-center">
-                {leader.name}
-              </h3>
-              <p className="text-gray-500 text-center text-xs">{leader.role}</p>
-            </motion.div>
-          ))}
+              &larr;
+            </button>
+            <div className="flex items-center space-x-2">
+              {leadership.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentLeaderIndex(index)}
+                  className={`w-3 h-3 rounded-full ${
+                    index === currentLeaderIndex ? "bg-blue-500" : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+            <button
+              onClick={() =>
+                setCurrentLeaderIndex((prev) => (prev + 1) % leadership.length)
+              }
+              className="p-2 rounded-full bg-white shadow-md hover:bg-gray-200"
+            >
+              &rarr;
+            </button>
+          </div>
         </div>
       </section>
 
@@ -242,9 +291,11 @@ const About = () => {
           Join us in making a difference. Volunteer, donate, or partner with us
           today!
         </p>
-        <motion.button className="px-8 py-3 bg-white cursor-pointer text-blue-500 font-semibold rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300">
-          Contact Us
-        </motion.button>
+        <Link to="/contact">
+          <motion.button className="px-8 py-3 bg-white cursor-pointer text-blue-500 font-semibold rounded-full shadow-md hover:bg-blue-500 hover:text-white transition-all duration-300">
+            Contact Us
+          </motion.button>
+        </Link>
       </section>
     </div>
   );

@@ -98,7 +98,7 @@ const Blog = () => {
       {/* Breadcrumb Section */}
       <motion.div
         className="relative h-64 sm:h-80 bg-cover bg-center text-white flex items-center justify-center"
-        style={{ backgroundImage: "url('/images/blogb.jpg')" }} // Fixed path
+        style={{ backgroundImage: "url('blogb.jpg')" }} // Fixed path
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -213,9 +213,13 @@ const Blog = () => {
                           ? new Date(post.date).toLocaleDateString()
                           : "No date"}
                       </p>
-                      <p className="text-gray-600 mt-2 flex-grow">
-                        {post.excerpt || "No excerpt available."}
-                      </p>
+                      <div
+                        className="prose max-w-none flex-grow"
+                        dangerouslySetInnerHTML={{
+                          __html: `${post.content.slice(0, 200)}...`,
+                        }}
+                      />
+
                       <Link
                         to={`/blog/${post.id}`}
                         className="mt-4 inline-block w-fit px-6 py-2 bg-blue-500 text-white font-semibold rounded-full shadow-md hover:bg-blue-600 transition-all duration-300"
