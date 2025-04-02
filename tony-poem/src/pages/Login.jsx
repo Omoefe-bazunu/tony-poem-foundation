@@ -87,7 +87,7 @@ const Login = () => {
       </motion.div>
 
       {/* Login Form */}
-      <section className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <section className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           className="bg-white rounded-lg shadow-lg p-6"
           variants={formVariants}
@@ -119,7 +119,7 @@ const Login = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
+                  className="w-full px-4 darktheme py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
                   placeholder="Enter your email"
                 />
               </div>
@@ -140,7 +140,7 @@ const Login = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
+                  className="w-full darktheme px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
                   placeholder="Enter your password"
                 />
               </div>

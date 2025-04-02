@@ -13,7 +13,7 @@ import TestimonialForm from "./pages/addTestimonials";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/manageContent";
 import Donation from "./pages/donate";
-// import Footer from "./components/Footer";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -35,7 +35,7 @@ function App() {
         <Route path="/donation" element={<Donation />} />
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </Router>
   );
 }

@@ -89,7 +89,7 @@ const NavBar = () => {
               <li key={item.name}>
                 <button
                   onClick={() => handleNavClick(item.path)}
-                  className="text-gray-700 font-medium hover:text-blue-600 transition-colors duration-300"
+                  className="text-gray-700 font-medium hover:text-blue-600 cursor-pointer transition-colors duration-300"
                 >
                   {item.name}
                 </button>

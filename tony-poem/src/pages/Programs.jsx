@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense, useMemo } from "react";
 import { Link } from "react-router-dom";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { motion } from "framer-motion";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import LoadingSpinner from "../components/Loading";
+
+// Lazy load heavy components
+const Slider = lazy(() => import("react-slick"));
+const MotionDiv = lazy(() =>
+  import("framer-motion").then((mod) => ({ default: mod.motion.div }))
+);
+
+// Load CSS asynchronously
+import("slick-carousel/slick/slick.css");
+import("slick-carousel/slick/slick-theme.css");
 
 const Programs = () => {
   const [view, setView] = useState(() =>
@@ -28,52 +35,69 @@ const Programs = () => {
   useEffect(() => {
     const fetchPrograms = async () => {
       setLoading(true);
-      const querySnapshot = await getDocs(collection(db, "programs"));
-      const programs = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setProgramsData(programs);
-      setLoading(false);
+      try {
+        const querySnapshot = await getDocs(collection(db, "programs"));
+        const programs = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProgramsData(programs);
+      } catch (error) {
+        console.error("Error fetching programs:", error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchPrograms();
   }, []);
 
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentPrograms = programsData.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(programsData.length / itemsPerPage);
+  // Memoized pagination calculations
+  const { currentPrograms, totalPages, indexOfLastItem } = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return {
+      currentPrograms: programsData.slice(indexOfFirstItem, indexOfLastItem),
+      totalPages: Math.ceil(programsData.length / itemsPerPage),
+      indexOfLastItem,
+    };
+  }, [currentPage, programsData, itemsPerPage]);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    autoplay: true,
-    autoplaySpeed: 3000,
-  };
+  // Memoized slider settings
+  const sliderSettings = useMemo(
+    () => ({
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: false,
+      autoplay: true,
+      autoplaySpeed: 3000,
+    }),
+    []
+  );
 
-  if (loading)
-    return <p className="text-center text-gray-600 text-lg">Loading...</p>;
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="w-full overflow-hidden">
       {/* Breadcrumb Section */}
-      <motion.div
-        className="relative h-64 sm:h-80 bg-cover bg-center text-white flex items-center justify-center"
-        style={{ backgroundImage: "url('progb.jpg')" }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <div className="absolute inset-0 bg-black/60"></div>
-        <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-bold">
-          Our Projects
-        </h1>
-      </motion.div>
+      <Suspense fallback={<div className="h-64 sm:h-80 bg-gray-200" />}>
+        <MotionDiv
+          className="relative h-64 sm:h-80 bg-cover bg-center text-white flex items-center justify-center"
+          style={{ backgroundImage: "url('progb.jpg')" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+        >
+          <div className="absolute inset-0 bg-black/60"></div>
+          <h1 className="relative text-4xl sm:text-5xl md:text-6xl font-bold">
+            Our Projects
+          </h1>
+        </MotionDiv>
+      </Suspense>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* View Toggle - Only show on desktop */}
@@ -108,44 +132,49 @@ const Programs = () => {
         {/* Programs Display */}
         <div
           className={
-            view === "grid" && window.innerWidth >= 640 // Only apply grid on desktop when grid is selected
+            view === "grid" && window.innerWidth >= 640
               ? "grid sm:grid-cols-2 gap-8"
-              : "space-y-8" // List view by default on mobile and when list is selected
+              : "space-y-8"
           }
         >
           {currentPrograms.map((program) => (
-            <motion.div
+            <Suspense
               key={program.id}
-              className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              fallback={<div className="p-6 bg-white rounded-lg shadow-md" />}
             >
-              <Slider {...sliderSettings} className="mb-4">
-                {program.images.map((img, index) => (
-                  <div key={index}>
-                    <img
-                      src={img}
-                      alt={`${program.name} - Image ${index + 1}`}
-                      className="w-full h-full object-cover` rounded-md"
-                    />
-                  </div>
-                ))}
-              </Slider>
-              <h3 className="text-xl font-semibold text-gray-800">
-                {program.name}
-              </h3>
-              <p className="text-gray-500 text-sm mt-1">
-                {new Date(program.date).toLocaleDateString()}
-              </p>
-              <p className="text-gray-600 mt-2">{program.description}</p>
-              {/* <Link
-                to={program.slug}
-                className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all duration-300"
+              <MotionDiv
+                className="p-6 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
               >
-                Learn More
-              </Link> */}
-            </motion.div>
+                <Suspense
+                  fallback={
+                    <div className="mb-4 h-48 bg-gray-200 rounded-md" />
+                  }
+                >
+                  <Slider {...sliderSettings} className="mb-4">
+                    {program.images.map((img, index) => (
+                      <div key={index}>
+                        <img
+                          src={img}
+                          alt={`${program.name} - Image ${index + 1}`}
+                          loading="lazy"
+                          className="w-full h-48 object-cover rounded-md"
+                        />
+                      </div>
+                    ))}
+                  </Slider>
+                </Suspense>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {program.name}
+                </h3>
+                <p className="text-gray-500 text-sm mt-1">
+                  {new Date(program.date).toLocaleDateString()}
+                </p>
+                <p className="text-gray-600 mt-2">{program.description}</p>
+              </MotionDiv>
+            </Suspense>
           ))}
         </div>
 
@@ -174,4 +203,4 @@ const Programs = () => {
   );
 };
 
-export default Programs;
+export default React.memo(Programs);

@@ -1,39 +1,50 @@
-import { useState, useEffect } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { useState, useEffect, Suspense, lazy } from "react";
+import React from "react"; // Add this import for React.memo
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { db } from "../firebase"; // Adjust path to your firebase config
 import { collection, getDocs, query, limit, orderBy } from "firebase/firestore";
 
-// Reusable Button Component
-const Button = ({ children, primary = true, className = "", ...props }) => (
-  <button
-    className={`px-6 py-3 rounded-full font-semibold shadow-md transition-all cursor-pointer duration-300 ${
-      primary
-        ? "bg-blue-500 text-white hover:bg-blue-600"
-        : "bg-white text-blue-500 hover:bg-gray-200"
-    } ${className}`}
-    {...props}
-  >
-    {children}
-  </button>
+// Lazy load the Slider component
+const Slider = lazy(() => import("react-slick"));
+
+// Import slick-carousel styles (client-side only)
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+// Reusable Button Component (Memoized for performance)
+const Button = React.memo(
+  ({ children, primary = true, className = "", ...props }) => (
+    <button
+      className={`px-6 py-3 rounded-full font-semibold shadow-md transition-all cursor-pointer duration-300 ${
+        primary
+          ? "bg-blue-500 text-white hover:bg-blue-600"
+          : "bg-white text-blue-500 hover:bg-gray-200"
+      } ${className}`}
+      {...props}
+    >
+      {children}
+    </button>
+  )
 );
 
 const Home = () => {
   const [isClient, setIsClient] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [testimonials, setTestimonial] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState({
+    blogs: false,
+    projects: false,
+    testimonials: false,
+  });
 
   useEffect(() => {
     setIsClient(true);
 
     // Fetch Blogs
     const fetchBlogs = async () => {
-      setLoading(true);
+      setLoading((prev) => ({ ...prev, blogs: true }));
       try {
         const blogsQuery = query(
           collection(db, "blogs"),
@@ -43,42 +54,51 @@ const Home = () => {
         const querySnapshot = await getDocs(blogsQuery);
         const blogData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          title: doc.data().title,
+          date: doc.data().date,
+          imageUrl: doc.data().imageUrl,
         }));
         setBlogs(blogData);
       } catch (err) {
         console.error("Error fetching blogs:", err);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, blogs: false }));
       }
     };
 
     // Fetch Programs (for Projects)
     const fetchPrograms = async () => {
+      setLoading((prev) => ({ ...prev, projects: true }));
       try {
         const programsQuery = query(
           collection(db, "programs"),
-          orderBy("date", "desc"), // Added orderBy to get most recent
-          limit(3) // Limit to 3 most recent projects
+          orderBy("date", "desc"),
+          limit(3)
         );
         const querySnapshot = await getDocs(programsQuery);
         const programData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          img: doc.data().images[0] || "abt.jpg",
+          img: doc.data().images?.[0] || "/images/abt.jpg",
           title: doc.data().name,
           alt: `${doc.data().name} event`,
-          date: doc.data().date, // Include date for ordering
+          date: doc.data().date,
         }));
         setProjects(programData);
       } catch (err) {
         console.error("Error fetching programs:", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, projects: false }));
       }
     };
 
-    // Fetch testimonials
+    // Fetch Testimonials
     const fetchTestimonials = async () => {
+      setLoading((prev) => ({ ...prev, testimonials: true }));
       try {
-        const testimonialQuery = query(collection(db, "testimonials"));
+        const testimonialQuery = query(
+          collection(db, "testimonials"),
+          limit(5)
+        );
         const querySnapshot = await getDocs(testimonialQuery);
         const testimonialData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -86,15 +106,16 @@ const Home = () => {
           title: doc.data().title,
           review: doc.data().review,
         }));
-        setTestimonial(testimonialData);
+        setTestimonials(testimonialData);
       } catch (err) {
         console.error("Error fetching testimonials:", err);
+      } finally {
+        setLoading((prev) => ({ ...prev, testimonials: false }));
       }
     };
 
-    fetchTestimonials();
-    fetchBlogs();
-    fetchPrograms();
+    // Fetch data in parallel
+    Promise.all([fetchBlogs(), fetchPrograms(), fetchTestimonials()]);
   }, []);
 
   const testimonialSliderSettings = {
@@ -108,6 +129,7 @@ const Home = () => {
     arrows: true,
     centerMode: false,
     centerPadding: "0px",
+    lazyLoad: "ondemand", // Enable lazy loading for slider images
     responsive: [
       {
         breakpoint: 1024,
@@ -142,8 +164,8 @@ const Home = () => {
         className="text-center py-20 bg-blue-500 text-white mt-8 bg-cover bg-center"
         style={{ backgroundImage: `url('tbg.jpg')` }}
       >
-        <h1 className="text-4xl sm:text-5xl font-bold">Tony Poem Foundation</h1>
-        <p className="mt-4 lg:text-lg text-sm max-w-3xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-bold">Tony Poem Foundation</h1>
+        <p className="mt-4 lg:text-xl text-sm max-w-3xl mx-auto">
           Creating Opportunities for Youths in Africa
         </p>
         <Link to="/contact">
@@ -153,8 +175,10 @@ const Home = () => {
 
       {/* ABOUT US */}
       <section className="py-16 text-center bg-white">
-        <h2 className="text- jig2xl sm:text-3xl font-semibold">About Us</h2>
-        <p className="mt-4 text-gray-600 max-w-4xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl font-semibold darktheme">
+          About Us
+        </h2>
+        <p className="mt-4 text-gray-600 w-[80%] mx-auto">
           Tony Poem Foundation is a worldwide therapy solutions NGO dedicated to
           youth empowerment, skill acquisition, and leadership development
           across Africa and beyond.
@@ -167,6 +191,7 @@ const Home = () => {
             initial={{ opacity: 0, y: -50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            loading="lazy"
           />
           <motion.img
             src="abt3.jpg"
@@ -175,6 +200,7 @@ const Home = () => {
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            loading="lazy"
           />
         </div>
         <Link to="/about">
@@ -184,11 +210,13 @@ const Home = () => {
 
       {/* OUR PROJECTS (GRID) */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-center">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center darktheme">
           Our Projects
         </h2>
-        {loading ? (
-          <p className="text-center text-gray-600 mt-8">Loading projects...</p>
+        {loading.projects ? (
+          <p className="text-center text-gray-600 mt-8 darktheme">
+            Loading projects...
+          </p>
         ) : projects.length > 0 ? (
           <div className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-3 px-6 lg:px-12">
             {projects.map((project) => (
@@ -197,8 +225,9 @@ const Home = () => {
                   src={project.img}
                   alt={project.alt}
                   className="w-full h-64 object-cover rounded-lg shadow-lg border-4 border-white"
+                  loading="lazy"
                 />
-                <h3 className="text-lg font-semibold text-center mt-4">
+                <h3 className="text-lg font-semibold text-center mt-4 darktheme">
                   {project.title}
                 </h3>
               </div>
@@ -240,29 +269,35 @@ const Home = () => {
 
       {/* TESTIMONIALS */}
       <section className="py-16 bg-white text-center px-6 lg:px-12">
-        <h2 className="text-2xl sm:text-3xl font-semibold">What People Say</h2>
-        {loading ? (
-          <p className="text-center text-gray-600 mt-8">
+        <h2 className="text-2xl sm:text-3xl font-semibold darktheme">
+          What People Say
+        </h2>
+        {loading.testimonials ? (
+          <p className="text-center text-gray-600 mt-8 darktheme">
             Loading testimonials...
           </p>
         ) : isClient && testimonials.length > 0 ? (
-          <Slider {...testimonialSliderSettings} className="">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.id} className="p-4">
-                <div className="bg-white shadow-lg rounded-lg p-6 mx-2 h-full flex flex-col justify-between ">
-                  <p className="text-gray-800 italic mb-4">
-                    "{testimonial.review}"
-                  </p>
-                  <div>
-                    <h4 className="font-semibold text-gray-800">
-                      {testimonial.name}
-                    </h4>
-                    <p className="text-gray-600 text-sm">{testimonial.title}</p>
+          <Suspense fallback={<p>Loading testimonials slider...</p>}>
+            <Slider {...testimonialSliderSettings} className="">
+              {testimonials.map((testimonial) => (
+                <div key={testimonial.id} className="p-4">
+                  <div className="bg-white shadow-lg rounded-lg p-6 mx-2 h-full flex flex-col justify-between darktheme">
+                    <p className="text-gray-800 italic mb-4">
+                      "{testimonial.review}"
+                    </p>
+                    <div>
+                      <h4 className="font-semibold text-gray-800">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-gray-600 text-sm">
+                        {testimonial.title}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          </Suspense>
         ) : (
           <p className="text-center text-gray-600 mt-8">
             No testimonials available.
@@ -272,33 +307,43 @@ const Home = () => {
 
       {/* BLOG POSTS */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-indigo-50">
-        <h2 className="text-2xl sm:text-3xl font-semibold text-center">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-center darktheme">
           Latest Blog Posts
         </h2>
-        {loading ? (
-          <p className="text-center text-gray-600 mt-8">Loading blogs...</p>
+        {loading.blogs ? (
+          <p className="text-center text-gray-600 mt-8 darktheme">
+            Loading blogs...
+          </p>
         ) : blogs.length > 0 ? (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 md:grid-cols-3 px-6 lg:px-12">
             {blogs.map((blog) => (
               <div
                 key={blog.id}
-                className="p-6 border border-blue-300 flex rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                className="p-6 border border-blue-300 darktheme rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-col sm:flex-row items-start"
               >
-                <div className=" w-full flex flex-col">
-                  <h3 className="text-lg font-semibold">{blog.title}</h3>
-                  <p className="text-gray-500 text-sm mt-2 flex-grow">
+                {/* Text Content */}
+                <div className="flex-1 flex flex-col">
+                  <h3 className="text-lg font-semibold flex-grow">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-500 text-sm mt-2 ">
                     {new Date(blog.date).toLocaleDateString()}
                   </p>
                   <Link to={`/blog/${blog.id}`}>
-                    <p className="mt-4 text-blue-500 cursor-pointer">
+                    <p className="mt-4 text-blue-500 cursor-pointer self-baseline">
                       Read More
                     </p>
                   </Link>
                 </div>
-                <div
-                  className=" w-full h-full border border-blue-300 bg-center bg-cover"
-                  style={{ backgroundImage: `url('${blog.imageUrl}')` }}
-                ></div>
+                {/* Image */}
+                <div className="w-full sm:w-40 h-40 mt-4 sm:mt-0 sm:ml-4 flex-shrink-0">
+                  <img
+                    src={blog.imageUrl}
+                    alt={blog.title}
+                    className="w-full h-full border border-blue-300 object-cover rounded-lg"
+                    loading="lazy"
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -322,6 +367,7 @@ const Home = () => {
               src={partner.logo}
               alt={`${partner.name} logo`}
               className="h-full object-contain w-30 lg:w-48"
+              loading="lazy"
             />
           ))}
         </div>

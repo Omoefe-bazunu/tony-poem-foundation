@@ -251,28 +251,28 @@ const AdminDashboard = () => {
           />
         </motion.div>
       </section>
-      <div className=" mx-auto max-w-xl px-12  mb-8 bg-none text-center  grid grid-cols-2 gap-6 justify-center items-center">
+      <div className=" mx-auto max-w-xl px-6  mb-8 bg-none text-center  grid grid-cols-2 gap-6 justify-center items-center">
         <Link
           to="/addPost"
-          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg whitespace-nowrap"
         >
           Add Blog Post
         </Link>
         <Link
           to="/addLeaders"
-          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg whitespace-nowrap"
         >
-          Add Learders
+          Add Leaders
         </Link>
         <Link
           to="/addProgram"
-          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg whitespace-nowrap"
         >
           Add Projects
         </Link>
         <Link
           to="/addTestimonial"
-          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-lg shadow-lg whitespace-nowrap"
         >
           Add Testimonials
         </Link>

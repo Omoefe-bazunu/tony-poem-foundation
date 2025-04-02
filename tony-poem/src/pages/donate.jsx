@@ -99,10 +99,10 @@ const Donation = () => {
       initial="hidden"
       animate="visible"
     >
-      <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+      <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6 darktheme">
         Make a Donation
       </h2>
-      <p className=" max-w-3xl text-center mb-8">
+      <p className=" max-w-3xl text-center mb-8 darktheme">
         Support our cause by making a donation. Any amount will be greatly
         appreciated
       </p>
@@ -123,7 +123,7 @@ const Donation = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md p-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full darktheme rounded-md p-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Enter full name"
           />
         </div>
@@ -143,7 +143,7 @@ const Donation = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block darktheme w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Enter email address"
           />
         </div>
@@ -152,7 +152,7 @@ const Donation = () => {
         <div>
           <label
             htmlFor="image"
-            className="block text-sm font-medium text-gray-700"
+            className="block text-sm font-medium text-gray-700 darktheme"
           >
             Payment Receipt/Screenshot
           </label>
@@ -162,7 +162,7 @@ const Donation = () => {
             name="image"
             accept="image/*"
             onChange={handleImageChange}
-            className="mt-1 block w-full p-3 border border-gray-300 rounded-md text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            className="mt-1 block w-full darktheme p-3 border border-gray-300 rounded-md text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
           />
           {formData.image && (
             <p className="mt-2 text-sm text-gray-500">

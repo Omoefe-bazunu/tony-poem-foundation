@@ -104,7 +104,7 @@ const CreateProgram = () => {
           initial="hidden"
           animate="visible"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 text-center mb-6">
+          <h2 className="text-2xl  darktheme sm:text-3xl md:text-4xl font-bold text-gray-800 text-center mb-6">
             Add a New Project
           </h2>
           {success ? (
@@ -129,7 +129,7 @@ const CreateProgram = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
+                  className="w-full px-4 py-3 border darktheme border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
                   placeholder="Enter project name"
                 />
               </div>
@@ -150,7 +150,7 @@ const CreateProgram = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
+                  className="w-full px-4 darktheme py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
                 />
               </div>
 
@@ -170,7 +170,7 @@ const CreateProgram = () => {
                   required
                   disabled={loading}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
+                  className="w-full darktheme px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 shadow-md"
                   placeholder="Brief description of the program"
                 />
               </div>
@@ -191,7 +191,7 @@ const CreateProgram = () => {
                   multiple
                   onChange={handleImageChange}
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:bg-gray-100 shadow-md"
+                  className="w-full darktheme px-4 py-3 border border-gray-300 rounded-lg text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:bg-gray-100 shadow-md"
                 />
                 {formData.images.length > 0 && (
                   <p className="mt-2 text-sm text-gray-500">

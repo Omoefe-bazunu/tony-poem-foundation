@@ -102,7 +102,7 @@ const CreateBlogPost = () => {
       >
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 ">
             Create Blog Post
           </h1>
         </div>
@@ -115,7 +115,7 @@ const CreateBlogPost = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 text-center darktheme">
             Write a New Post
           </h2>
           {success ? (
@@ -140,7 +140,7 @@ const CreateBlogPost = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className="w-full px-4 py-3 border darktheme border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                   placeholder="Enter blog post title"
                 />
               </div>
@@ -160,7 +160,7 @@ const CreateBlogPost = () => {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+                  className="w-full px-4 py-3 border darktheme border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
                 >
                   <option value="">Select a topic</option>
                   <option value="Youth">Youth</option>
@@ -185,7 +185,7 @@ const CreateBlogPost = () => {
                   accept="image/*"
                   onChange={handleImageChange}
                   disabled={loading}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:bg-gray-100"
+                  className="w-full px-4 py-3 border darktheme border-gray-300 rounded-lg text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:bg-gray-100"
                 />
                 {formData.image && (
                   <p className="mt-2 text-sm text-gray-500">
@@ -222,7 +222,7 @@ const CreateBlogPost = () => {
                   </div>
                   <EditorContent
                     editor={editor}
-                    className="p-4 min-h-[200px] bg-white focus:outline-blue-400 px-4"
+                    className="p-4 min-h-[200px] bg-white focus:outline-blue-400 px-4 darktheme"
                   />
                 </div>
               </div>

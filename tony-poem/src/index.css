@@ -9,9 +9,20 @@
 
   color-scheme: light dark;
   background-color: rgb(255, 251, 234);
+  --form-text-color: initial;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --form-text-color: var(--color-gray-800);
+  }
+}
+
+.darktheme {
+  color: var(--form-text-color);
 }

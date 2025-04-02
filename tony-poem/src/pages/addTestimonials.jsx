@@ -74,7 +74,7 @@ const TestimonialForm = () => {
       initial="hidden"
       animate="visible"
     >
-      <h2 className="text-2xl sm:text-3xl font-semibold text-center mb-6">
+      <h2 className="text-2xl darktheme sm:text-3xl font-semibold text-center mb-6">
         Add Testimonial
       </h2>
 
@@ -94,7 +94,7 @@ const TestimonialForm = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="mt-1 block w-full rounded-md p-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full darktheme rounded-md p-4 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Enter full name"
           />
         </div>
@@ -114,7 +114,7 @@ const TestimonialForm = () => {
             value={formData.title}
             onChange={handleChange}
             required
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full darktheme p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g., Resident, Asaba, Delta State"
           />
         </div>
@@ -133,7 +133,7 @@ const TestimonialForm = () => {
             value={formData.bio}
             onChange={handleChange}
             rows={4}
-            className="mt-1 block w-full p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            className="mt-1 block w-full darktheme p-4 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="Enter the review or statement here"
           />
         </div>
