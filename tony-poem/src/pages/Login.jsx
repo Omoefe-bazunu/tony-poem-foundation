@@ -49,7 +49,7 @@ const Login = () => {
       );
       console.log("Logged in:", userCredential.user);
       setSuccess(true);
-      setTimeout(() => navigate("/"), 1500); // Redirect after 1.5s
+      setTimeout(() => navigate("/manageContent"), 1500); // Redirect after 1.5s
     } catch (err) {
       setError(err.message || "Login failed. Please check your credentials.");
       console.error("Login error:", err);

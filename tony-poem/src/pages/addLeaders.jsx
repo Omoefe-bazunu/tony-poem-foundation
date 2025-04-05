@@ -164,7 +164,6 @@ const LeadershipForm = () => {
             name="department"
             value={formData.department}
             onChange={handleChange}
-            required
             className="mt-1 block w-full p-4 darktheme rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             placeholder="e.g., Human Resources"
           />

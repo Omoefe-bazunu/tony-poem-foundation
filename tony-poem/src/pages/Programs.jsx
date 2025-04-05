@@ -150,7 +150,7 @@ const Programs = () => {
               >
                 <Suspense
                   fallback={
-                    <div className="mb-4 h-48 bg-gray-200 rounded-md" />
+                    <div className="mb-4 h-96 bg-gray-200 rounded-md" />
                   }
                 >
                   <Slider {...sliderSettings} className="mb-4">
@@ -160,7 +160,7 @@ const Programs = () => {
                           src={img}
                           alt={`${program.name} - Image ${index + 1}`}
                           loading="lazy"
-                          className="w-full h-48 object-cover rounded-md"
+                          className="w-full h-96 object-cover rounded-md"
                         />
                       </div>
                     ))}
@@ -172,7 +172,9 @@ const Programs = () => {
                 <p className="text-gray-500 text-sm mt-1">
                   {new Date(program.date).toLocaleDateString()}
                 </p>
-                <p className="text-gray-600 mt-2">{program.description}</p>
+                <p className="text-gray-600 mt-2 whitespace-pre-wrap">
+                  {program.description}
+                </p>
               </MotionDiv>
             </Suspense>
           ))}

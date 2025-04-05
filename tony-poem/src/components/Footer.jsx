@@ -4,16 +4,16 @@ import { FaLinkedinIn } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white py-6 bottom-0 w-full">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+    <footer className="bg-gray-900 text-white py-6 bottom-0 w-full flex flex-col gap-4 justify-center items-center">
+      <div className="container px-4 flex flex-col md:flex-row justify-between items-center text-center">
         {/* Left Section */}
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-gray-400 w-full">
           © {new Date().getFullYear()} Tony Poem Foundation. All rights
           reserved.
         </p>
 
         {/* Center - Navigation Links */}
-        <nav className="flex space-x-4 my-4 md:my-0">
+        <nav className="flex space-x-4 my-4 md:my-0 flex-wrap item-center justify-center text-center w-full">
           <a href="/" className="text-gray-400 hover:text-white transition">
             Home
           </a>
@@ -47,7 +47,7 @@ const Footer = () => {
         </nav>
 
         {/* Right Section - Social Icons */}
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 w-full mx-auto justify-center items-center">
           <a
             href="https://www.facebook.com/profile.php?id=61566465128143&mibextid=ZbWKwL"
             target="_blank"
@@ -63,6 +63,9 @@ const Footer = () => {
           </a>
         </div>
       </div>
+      <p className=" text-xs mx-auto w-full text-center text-gray-600">
+        DESIGNED BY: HIGH-ER ENTERPRISES - +2349043970401
+      </p>
     </footer>
   );
 };

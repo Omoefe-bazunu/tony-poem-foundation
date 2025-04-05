@@ -299,10 +299,16 @@ const Home = () => {
             </Slider>
           </Suspense>
         ) : (
-          <p className="text-center text-gray-600 mt-8">
+          <p className="text-center text-gray-600 my-8">
             No testimonials available.
           </p>
         )}
+        <Link
+          to="/addTestimonial"
+          className="p-4 max-w-3xl bg-blue-500 text-white rounded-full shadow-lg whitespace-nowrap"
+        >
+          Add Testimonials
+        </Link>
       </section>
 
       {/* BLOG POSTS */}

@@ -247,7 +247,7 @@ const Blog = () => {
                         className="w-full h-48 object-cover rounded-t-lg"
                       />
                       <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-xl font-semibold text-gray-800">
+                        <h3 className="text-xl font-semibold text-gray-800 uppercase">
                           {post.title || "Untitled"}
                         </h3>
                         <p className="text-gray-500 text-sm mt-1">

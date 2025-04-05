@@ -151,7 +151,7 @@ const BlogDetails = () => {
             <div className="p-6 sm:p-8">
               <p className="text-gray-500 mb-4">{formatDate(post.date)}</p>
               <div
-                className={`prose max-w-none ${styles.blogContent}`}
+                className={`prose whitespace-pre-wrap max-w-none ${styles.blogContent}`}
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 

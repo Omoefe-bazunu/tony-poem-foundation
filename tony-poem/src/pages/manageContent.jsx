@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { db, storage, auth } from "../firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 // Reusable Button Component
 const Button = ({ children, primary = true, className = "", ...props }) => (
@@ -81,6 +81,16 @@ const AdminDashboard = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      // Optionally redirect or show a message
+      console.log("User signed out successfully.");
+    } catch (err) {
+      console.error("Error signing out:", err);
+    }
+  };
 
   // Check authentication
   useEffect(() => {
@@ -276,6 +286,14 @@ const AdminDashboard = () => {
         >
           Add Testimonials
         </Link>
+      </div>
+      <div className="text-center mt-10">
+        <button
+          onClick={handleSignOut}
+          className="px-6 mb-8 cursor-pointer py-3 bg-red-500 hover:bg-red-600 text-white rounded-full font-semibold transition duration-300 shadow-md"
+        >
+          Sign Out
+        </button>
       </div>
     </div>
   );
